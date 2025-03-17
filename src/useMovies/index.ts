@@ -41,24 +41,24 @@ const useMovies = () => {
     fetchMovies();
   }, []);
 
-  const filteredMovies = movies.filter((movie) => {
-    const matchesTitle =
-      filters.search === '' ||
-      movie.title.toLowerCase().includes(filters.search.toLowerCase());
+//   const filteredMovies = movies.filter((movie) => {
+//     const matchesTitle =
+//       filters.search === '' ||
+//       movie.title.toLowerCase().includes(filters.search.toLowerCase());
 
-      const matchesGenre =
-      filters.genre === 'All' ||
-      (typeof movie.genre === 'string' &&
-        movie.genre.toLowerCase() === filters.genre.toLowerCase());
+//       const matchesGenre =
+//       filters.genre === 'All' ||
+//       (typeof movie.genre === 'string' &&
+//         movie.genre.toLowerCase() === filters.genre.toLowerCase());
     
-    const matchesYear =
-      movie.year >= filters.yearRange[0] && movie.year <= filters.yearRange[1];
+//     const matchesYear =
+//       movie.year >= filters.yearRange[0] && movie.year <= filters.yearRange[1];
 
-    const matchesRating =
-      movie.rating >= filters.ratingRange[0] && movie.rating <= filters.ratingRange[1];
+//     const matchesRating =
+//       movie.rating >= filters.ratingRange[0] && movie.rating <= filters.ratingRange[1];
 
-    return matchesTitle && matchesGenre && matchesYear && matchesRating;
-  });
+//     return matchesTitle && matchesGenre && matchesYear && matchesRating;
+//   });
 
   const addMovie = async (movie: Omit<Movie, 'id'>) => {
     try {
