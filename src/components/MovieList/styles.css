@@ -1,0 +1,36 @@
+.movie-list-container {
+    width: 100%;
+  }
+  
+  .movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .loading, .error, .no-movies {
+    padding: 40px;
+    text-align: center;
+    background-color: var(--card-background);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+  }
+  
+  .loading {
+    color: var(--light-text);
+  }
+  
+  .error {
+    color: var(--error-color);
+  }
+  
+  .no-movies {
+    color: var(--light-text);
+    font-style: italic;
+  }
+  
+  @media (max-width: 640px) {
+    .movie-grid {
+      grid-template-columns: 1fr;
+    }
+  }
