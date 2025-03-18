@@ -32,9 +32,18 @@ const genreMap: Record<number, string> = {
 
 export const movieApi = {
   getMovies: async (): Promise<Movie[]> => {
+    
+    const randomPage = Math.floor(Math.random() * 20) + 1;
+    
     const response = await axios.get<{ results: any[] }>(
-      `${API_BASE_URL}/discover/movie?`,
-      { params: { api_key: API_KEY } }
+      `${API_BASE_URL}/discover/movie`,
+      { 
+        params: { 
+          api_key: API_KEY,
+          page: randomPage,
+          sort_by: 'popularity.desc' 
+        } 
+      }
     );
     console.log("TMDb response:", response.data);
 
@@ -47,7 +56,7 @@ export const movieApi = {
         id: String(movie.id),
         title: movie.title,
         genre: genre,
-        year: parseInt(movie.release_date?.split("-")[0]) || 2023,
+        year: parseInt(movie.release_date?.split("-")[0]) || 2025,
         rating: movie.vote_average || 0,
         posterUrl: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : undefined
       };
@@ -74,7 +83,7 @@ export const movieApi = {
 
   createMovie: async (movie: Omit<Movie, "id">) => {
     const docRef = await addDoc(movieCollection, movie);
-    return { id: docRef.id, ...movie };
+    return { id: docRef.id, ...movie }
   },
 
   updateMovie: async (id: string, movie: Partial<Movie>) => {

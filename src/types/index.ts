@@ -2,7 +2,7 @@ export interface Movie {
     id: string;
     title: string;
     year: number;
-    genre: string | number;  // Update to allow both string and number
+    genre: string | number; 
     rating: number;
     posterUrl?: string;
   }
@@ -34,7 +34,7 @@ export interface Movie {
   
   export interface MovieListProps {
     movies: Movie[];
-    allMovies: Movie[]; // <-- Add this line
+    allMovies: Movie[]; 
     loading: boolean;
     error: string | null;
     filters: MovieFilters;
@@ -42,7 +42,6 @@ export interface Movie {
     onEditMovie: (movie: Movie) => void;
     onDeleteMovie: (id: string) => void;
   }
-  
 
   export interface MovieFormProps {
     movie?: Movie;

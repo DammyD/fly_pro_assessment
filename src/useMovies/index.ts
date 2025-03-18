@@ -7,7 +7,7 @@ import { db } from '../firebaseConfig';
 const movieCollection = collection(db, "movies");
 
 const useMovies = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [allMovies, setAllMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<MovieFilters>({
@@ -18,52 +18,59 @@ const useMovies = () => {
   });
 
   useEffect(() => {
-    const fetchMovies = async () => {
-      try {
-        setLoading(true);
-        const tmdbMovies = await movieApi.getMovies();
-        const snapshot = await getDocs(movieCollection);
-        const userMovies = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as Movie[];
-
-        const allMovies = [...tmdbMovies, ...userMovies];
-        setMovies(allMovies);
-      } catch (err) {
-        setError('Failed to fetch movies');
-        console.error("Error fetching movies:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchMovies();
-  }, []);
+  }, []); 
 
-//   const filteredMovies = movies.filter((movie) => {
-//     const matchesTitle =
-//       filters.search === '' ||
-//       movie.title.toLowerCase().includes(filters.search.toLowerCase());
+  const fetchMovies = async () => {
+    try {
+      setLoading(true);
+      const tmdbMovies = await movieApi.getMovies();
+      const snapshot = await getDocs(movieCollection);
+      const userMovies = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Movie[];
 
-//       const matchesGenre =
-//       filters.genre === 'All' ||
-//       (typeof movie.genre === 'string' &&
-//         movie.genre.toLowerCase() === filters.genre.toLowerCase());
+      const combinedMovies = [...tmdbMovies, ...userMovies];
+      setAllMovies(combinedMovies);
+    } catch (err) {
+      setError('Failed to fetch movies');
+      console.error("Error fetching movies:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredMovies = allMovies.filter((movie) => {
+
+    const matchesTitle = 
+      !filters.search || 
+      movie.title.toLowerCase().includes(filters.search.toLowerCase());
+
+    const movieGenre = 
+      typeof movie.genre === 'string' 
+        ? movie.genre.toLowerCase() 
+        : String(movie.genre).toLowerCase();
     
-//     const matchesYear =
-//       movie.year >= filters.yearRange[0] && movie.year <= filters.yearRange[1];
+    const matchesGenre = 
+      filters.genre === 'All' || 
+      movieGenre === filters.genre.toLowerCase();
 
-//     const matchesRating =
-//       movie.rating >= filters.ratingRange[0] && movie.rating <= filters.ratingRange[1];
+    const matchesYear =
+      movie.year >= filters.yearRange[0] && 
+      movie.year <= filters.yearRange[1];
 
-//     return matchesTitle && matchesGenre && matchesYear && matchesRating;
-//   });
+    const matchesRating =
+      movie.rating >= filters.ratingRange[0] && 
+      movie.rating <= filters.ratingRange[1];
+
+    return matchesTitle && matchesGenre && matchesYear && matchesRating;
+  });
 
   const addMovie = async (movie: Omit<Movie, 'id'>) => {
     try {
       const newMovie = await movieApi.createMovie(movie);
-      setMovies(prev => [...prev, newMovie]);
+      setAllMovies(prev => [...prev, newMovie]);
       return newMovie;
     } catch (err) {
       setError('Failed to add movie');
@@ -74,7 +81,7 @@ const useMovies = () => {
   const updateMovie = async (id: string, movieData: Partial<Movie>) => {
     try {
       const updatedMovie = await movieApi.updateMovie(id, movieData);
-      setMovies(prev => prev.map(movie => movie.id === id ? updatedMovie : movie));
+      setAllMovies(prev => prev.map(movie => movie.id === id ? updatedMovie : movie));
       return updatedMovie;
     } catch (err) {
       setError('Failed to update movie');
@@ -85,7 +92,7 @@ const useMovies = () => {
   const deleteMovie = async (id: string) => {
     try {
       await movieApi.deleteMovie(id);
-      setMovies(prev => prev.filter(movie => movie.id !== id));
+      setAllMovies(prev => prev.filter(movie => movie.id !== id));
     } catch (err) {
       setError('Failed to delete movie');
       throw err;
@@ -93,8 +100,8 @@ const useMovies = () => {
   };
 
   return {
-    movies: movies,
-    allMovies: movies,
+    movies: filteredMovies, 
+    allMovies: allMovies,  
     loading,
     error,
     filters,
@@ -102,6 +109,7 @@ const useMovies = () => {
     addMovie,
     updateMovie,
     deleteMovie,
+    fetchMovies 
   };
 };
 
