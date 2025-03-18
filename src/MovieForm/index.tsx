@@ -62,7 +62,7 @@ const MovieForm: React.FC<MovieFormProps> = ({
               id="year"
               name="year"
               min="1900"
-              max="2023"
+              max="2025"
               value={formData.year}
               onChange={handleChange}
               required

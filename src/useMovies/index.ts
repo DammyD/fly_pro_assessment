@@ -13,7 +13,7 @@ const useMovies = () => {
   const [filters, setFilters] = useState<MovieFilters>({
     search: '',
     genre: 'All',
-    yearRange: [1900, 2023],
+    yearRange: [1900, 2025],
     ratingRange: [0, 10],
   });
 

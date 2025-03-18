@@ -35,10 +35,10 @@ const FilterBar: React.FC<FilterBarProps> = ({ filters, setFilters, genres }) =>
               setFilters({ ...filters, yearRange: [min, max] });
             }}
           >
-            <option value="1900-2023">1900-2023</option>
+            <option value="1900-2025">1900-2025</option>
             <option value="1900-1950">1900-1950</option>
             <option value="1950-2000">1950-2000</option>
-            <option value="2000-2023">2000-2023</option>
+            <option value="2000-2025">2000-2025</option>
           </select>
         </div>
         
